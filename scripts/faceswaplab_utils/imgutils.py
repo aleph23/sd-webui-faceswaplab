@@ -221,7 +221,15 @@ def apply_mask(
             img.paste(overlay, (0, 0), overlay)
             return img
 
-        img = processing.apply_overlay(img, p.paste_to, batch_index, p.overlay_images)
+        # Check if overlay_images is not None and has elements
+    if p.overlay_images is not None and batch_index < len(p.overlay_images):
+        # Select the overlay image for the current batch index
+        selected_overlay = p.overlay_images[batch_index]
+        # Apply the overlay using the selected image
+        img = processing.apply_overlay(img, p.paste_to, selected_overlay)
+    else:
+        # Log a debug message if no overlay is selected or the list is empty
+        logger.debug("No overlay selected or overlay list is empty.")
         if p.color_corrections is not None and batch_index < len(p.color_corrections):
             img = processing.apply_color_correction(
                 p.color_corrections[batch_index], img
